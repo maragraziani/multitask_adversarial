@@ -1,5 +1,5 @@
 # Combining Multi-task and Adversarial Losses
-Repository for the paper "Controlling CNNs by combining multitask and adversarial losses"
+Repository for the paper "Controlling CNNs by combining multitask and adversarial losses" by Mara Graziani, Sebastian Otalora, Henning Muller and Vincent Andrearczyk.
 
 In this paper, a framework for controllable and interpretable training is built on top of successful existing techniques of hard parameter sharing, with the main goal of introducing expert knowledge in the training objectives. 
 
