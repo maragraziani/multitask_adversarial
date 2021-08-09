@@ -80,7 +80,7 @@ class MYEarlyStopping(Callback):
                baseline=None,
                restore_best_weights=False):
         #super(EarlyStopping, self).__init__()
-        print 'in'
+        #print 'in'
         self.monitor = monitor
         self.patience = patience
         self.verbose = verbose
@@ -205,7 +205,7 @@ def reverse_gradient(X, hp_lambda):
     @tf.RegisterGradient(grad_name)
     def _flip_gradients(op, grad):
         grad = tf.negative(grad)
-        final_val = grad * hp_lambda
+        final_val = grad * hp_lambda 
         return [final_val]
     g = K.get_session().graph
     with g.gradient_override_map({'Identity': grad_name}):
@@ -223,6 +223,7 @@ class GradientReversal(Layer):
         self.trainable_weights = []
         return
     def call(self, x, mask=None):
+        self.hp_lambda=tf.Print(self.hp_lambda,[self.hp_lambda],'self.hp_lambda: ')
         return reverse_gradient(x, self.hp_lambda)
 
     def get_output_shape_for(self, input_shape):
@@ -557,7 +558,7 @@ def get_class(l, entry_path):
         else:
             return 1.
     else:
-        print('I should not enter here, really: ', l.split(', ')[-1])
+        #print('I should not enter here, really: ', l.split(', ')[-1])
         if entry_path.split('/level7')[0]=='normal':
             return 0.
         else:
@@ -570,6 +571,8 @@ def get_test_label(entry_path):
 
 
 def get_domain(db_name, entry_path):
+    if db_name=='pannuke':
+        return 6
     if db_name=='cam16':
         return 5
     else:
@@ -613,6 +616,7 @@ class LR_scheduling(Callback):
         self.new_folder=new_folder
         self.loss=loss
         self.metrics=metrics
+        lr_monitor=open('{}/lr_monitor.log'.format(self.new_folder), 'w')
     def on_epoch_end(self, epoch, logs={}):
         optimizer = self.model.optimizer
         initial_lr= K.eval(optimizer.lr)
@@ -622,6 +626,7 @@ class LR_scheduling(Callback):
         print 'LR: {},  decay: {}'.format(initial_lr, lr_decay)
         lr_monitor.close()
         print 'val_loss: {}'.format(logs['val_loss'])
+        """
         if logs['val_loss']<self.best_val_loss:
             self.best_val_loss=logs['val_loss']
         else: 
@@ -641,4 +646,4 @@ class LR_scheduling(Callback):
             opt = keras.optimizers.SGD(lr=lr, momentum=0.9, nesterov=False)
             compile_model(self.model, opt, loss=self.loss, metrics=self.metrics)
             lr_decay=K.eval(lr * (1. / (1. + 1e-6 * tf.cast(optimizer.iterations, tf.float32))))
-            print 'Restarting LR to: {},  decayed: {}'.format(lr, lr_decay)
+            print 'Restarting LR to: {},  decayed: {}'.format(lr, lr_decay)"""

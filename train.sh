@@ -1,4 +1,5 @@
 EXPERIMENT_TYPE=$1
+SEED=$2
 FILE=results/$EXPERIMENT_TYPE
 if [[ -d $FILE ]]
 then
@@ -7,7 +8,7 @@ then
     then
         #horovodrun -np 2 \
         #-H localhost:4 \
-        python train_baseline.py 903 $EXPERIMENT_TYPE
+        python train_baseline.py $SEED $EXPERIMENT_TYPE
     else
         echo Stopping process to avoid overriding data.
     fi
@@ -15,6 +16,6 @@ else
     mkdir results/$EXPERIMENT_TYPE
     #horovodrun -np 2 \
         #-H localhost:4 \
-        python train_baseline.py 903  $EXPERIMENT_TYPE
+        python train_baseline.py $SEED $EXPERIMENT_TYPE
 fi
 
