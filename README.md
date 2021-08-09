@@ -119,7 +119,12 @@ This code was developed in Python 3.6 and using Tensorflow 2. You will also need
 ## Usage
 
  ```sh
-   gtrain.sh EXPERIMENT_NAME
+   python train_multitask_adversarial.py GPU_INDEX EXPERIMENT_NAME UNDESIRED_TARGET DESIRED_TARGETS
+   ```
+ For example will run the CNN with domain-adversarial training and the additional learning of nuclei count:
+ 
+  ```sh
+   python train_multitask_adversarial.py 0 DOMAIN-COUNT  domain count
    ```
 
 For more examples, please refer to the [Notebooks](https://github.com/maragraziani/multitask_adversarial/tree/main/notebooks) folder
