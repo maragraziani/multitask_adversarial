@@ -1,13 +1,4 @@
 
-
-
-
-example for EXPERIMENT_NAME='run01'
-
-train.sh run01
-
-results will be in folder results/run01
-
 <!--
 *** Thanks for checking out the Best-README-Template. If you have a suggestion
 *** that would make this better, please fork the repo and create a pull request
