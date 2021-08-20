@@ -27,7 +27,7 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
-
+[![DOI](https://zenodo.org/badge/284033732.svg)](https://zenodo.org/badge/latestdoi/284033732)
 
 
 <!-- PROJECT LOGO -->
