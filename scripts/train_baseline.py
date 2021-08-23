@@ -27,15 +27,16 @@ keras.backend.set_session(tf.Session(config=config))
 #
 verbose=True 
 # DATA PATHS
-cam16 = hd.File('/home/mara/adversarialMICCAI/data/ultrafast/cam16_500/patches.hdf5',  'r', libver='latest', swmr=True)
-all500 = hd.File('/home/mara/adversarialMICCAI/data/ultrafast/all500/patches.hdf5',  'r', libver='latest', swmr=True)
-extra17 = hd.File('/home/mara/adversarialMICCAI/data/ultrafast/extra17/patches.hdf5',  'r', libver='latest', swmr=True)
-tumor_extra17=hd.File('/home/mara/adversarialMICCAI/data/ultrafast/1129-1155/patches.hdf5', 'r', libver='latest', swmr=True)
-test2 = hd.File('/mnt/nas2/results/IntermediateResults/Camelyon/ultrafast/test_data2/patches.hdf5', 'r', libver='latest', swmr=True)
-pannuke= hd.File('/mnt/nas2/results/IntermediateResults/Camelyon/pannuke/patches_fix.hdf5', 'r', libver='latest', swmr=True)
+#cam16 = hd.File('/home/mara/adversarialMICCAI/data/ultrafast/cam16_500/patches.hdf5',  'r', libver='latest', swmr=True)
+#all500 = hd.File('/home/mara/adversarialMICCAI/data/ultrafast/all500/patches.hdf5',  'r', libver='latest', swmr=True)
+#extra17 = hd.File('/home/mara/adversarialMICCAI/data/ultrafast/extra17/patches.hdf5',  'r', libver='latest', swmr=True)
+#tumor_extra17=hd.File('/home/mara/adversarialMICCAI/data/ultrafast/1129-1155/patches.hdf5', 'r', libver='latest', swmr=True)
+#test2 = hd.File('/mnt/nas2/results/IntermediateResults/Camelyon/ultrafast/test_data2/patches.hdf5', 'r', libver='latest', swmr=True)
+#pannuke= hd.File('/mnt/nas2/results/IntermediateResults/Camelyon/pannuke/patches_fix.hdf5', 'r', libver='latest', swmr=True)
 #
 global data
-data={'cam16':cam16,'all500':all500,'extra17':extra17, 'tumor_extra17':tumor_extra17, 'test_data2': test2, 'pannuke':pannuke}
+#data={'cam16':cam16,'all500':all500,'extra17':extra17, 'tumor_extra17':tumor_extra17, 'test_data2': test2, 'pannuke':pannuke}
+data = hd.File('data/demo_file.h5py', 'r')#, libver='latest', swmr=True)
 CONFIG_FILE = 'doc/config.cfg'
 COLOR = True
 global new_folder
@@ -54,19 +55,20 @@ setproctitle.setproctitle('UC1_{}'.format(EXPERIMENT_TYPE))
 np.random.seed(seed)
 tf.set_random_seed(seed)
 # DATA SPLIT CSVs
-train_csv=open('/mnt/nas2/results/IntermediateResults/Camelyon/train_shuffle.csv', 'r') 
-val_csv=open('/mnt/nas2/results/IntermediateResults/Camelyon/val_shuffle.csv', 'r')
-test_csv=open('/mnt/nas2/results/IntermediateResults/Camelyon/test_shuffle.csv', 'r')
+train_csv=open('doc/demo_train_shuffle.csv', 'r') 
+val_csv=open('doc/demo_val_shuffle.csv', 'r')
+test_csv=open('doc/demo_test_shuffle.csv', 'r')
 train_list=train_csv.readlines()
 val_list=val_csv.readlines()
 test_list=test_csv.readlines()
-test2_csv = open('/mnt/nas2/results/IntermediateResults/Camelyon/test2_shuffle.csv', 'r')
+test2_csv = open('doc/demo_test2_shuffle.csv', 'r')
 test2_list=test2_csv.readlines()
 test2_csv.close()
 train_csv.close()
 val_csv.close()
 test_csv.close()
-data_csv=open('./doc/pannuke_data_shuffle.csv')
+#data_csv=open('./doc/pannuke_data_shuffle.csv')
+data_csv=open('./doc/demo_data_shuffle.csv')
 data_list=data_csv.readlines()
 data_csv.close()
 # STAIN NORMALIZATION
@@ -82,7 +84,8 @@ def normalize_patch(patch, normalizer):
 # LOAD DATA NORMALIZER
 global normalizer
 db_name, entry_path, patch_no = get_keys(data_list[0])
-normalization_reference_patch = data[db_name][entry_path][patch_no]
+normalization_reference_patch = data[db_name][entry_path][str(patch_no)][:]
+#import pdb; pdb.set_trace()
 normalizer = get_normalizer(normalization_reference_patch, save_folder=new_folder)
 
 """
@@ -103,7 +106,7 @@ def get_batch_data(patch_list, batch_size=32):
             batch_samples=patch_list[offset:offset+batch_size]
             for line in batch_samples:
                 db_name, entry_path, patch_no = get_keys(line)
-                patch=data[db_name][entry_path][patch_no]
+                patch=data[db_name][entry_path][patch_no][:]
                 patch=normalize_patch(patch, normalizer)
                 patch=keras.applications.inception_v3.preprocess_input(patch) 
                 label = get_class(line, entry_path) 
@@ -121,7 +124,8 @@ def get_test_batch(patch_list, batch_size=32):
             batch_samples=patch_list[offset:offset+batch_size]
             for line in batch_samples:
                 db_name, entry_path, patch_no = get_keys(line)
-                patch=data[db_name][entry_path][patch_no]
+                #import pdb; pdb.set_trace()
+                patch=data[db_name][entry_path][patch_no][:]
                 patch=normalize_patch(patch, normalizer)
                 patch=keras.applications.inception_v3.preprocess_input(patch)
                 label = get_test_label(entry_path)
@@ -202,7 +206,11 @@ for i in range(T_B):
     ys[i*BATCH_SIZE:(i)*BATCH_SIZE+len(y)] = y
     preds[i*BATCH_SIZE:(i)*BATCH_SIZE+len(y)] = model.predict(x)
 preds=tf.sigmoid(preds).eval(session=tf.Session())
-auc=sklearn.metrics.roc_auc_score(ys,preds)
+try:
+    auc=sklearn.metrics.roc_auc_score(ys,preds)
+except:
+    print("auc score not available in demo mode")
+    auc=0.
 #
 print 'Before training auc: ', auc
 rpreds=tf.round(preds).eval(session=tf.Session())

@@ -541,9 +541,9 @@ def r_square(y_true, y_pred):
 
 def get_keys(l):
     db_name=l.split(', ')[0]
-    entry_path=l.split(', ')[1]
-    patch_no=l.split(', ')[2]
-    return db_name, entry_path, int(patch_no)
+    entry_path=l.split(', ')[1].strip()
+    patch_no=l.split(', ')[2].strip()
+    return db_name, entry_path, patch_no
 
 def get_class(l, entry_path):
     if l.split(', ')[-1].strip('\n')=='test':

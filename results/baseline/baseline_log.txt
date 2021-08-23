@@ -1,0 +1,15 @@
+Trainable layers: conv2d_88
+conv2d_89
+conv2d_92
+conv2d_93
+conv2d_86
+global_average_pooling2d_1
+finetuned_features1
+dropout_1
+finetuned_features2
+dropout_2
+finetuned_features3
+dropout_3
+predictions
+Before training auc: 0.0
+Before training loss, acc: 0.5
