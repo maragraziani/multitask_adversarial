@@ -114,7 +114,7 @@ Installation should take ~20 minutes on a normal laptop.
     ```sh
     pip install -r requirements.txt
     pip install https://storage.googleapis.com/tensorflow/mac/cpu/tensorflow-1.8.0-py3-none-any.whl
-    pip install keras==2.2.4
+    pip install keras==2.2.4 setproctitle
     pip install -U --force-reinstall --no-dependencies git+https://github.com/datumbox/keras@bugfix/trainable_bn 
     ```
 
