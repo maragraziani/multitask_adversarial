@@ -44,7 +44,6 @@ Keras @ git+https://github.com/datumbox/keras@bb5e635e7b0e095b6e5ba87df8e11e75ec
 kiwisolver==1.1.0
 Markdown==3.1.1
 MarkupSafe==1.1.1
-mask-rcnn==2.1
 matplotlib==2.2.5
 mistune==0.8.4
 mock==3.0.5
