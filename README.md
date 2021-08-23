@@ -132,6 +132,18 @@ Installation should take ~20 minutes on a normal laptop.
 
 For more examples, please refer to the [Notebooks](https://github.com/maragraziani/multitask_adversarial/tree/main/notebooks) folder
 
+# Reproducibility
+
+To replicate baseline results (in Table x)
+ ```sh
+   bash replicate_baseline.sh
+   ```
+To replicate multi-task adversarial results (in Table x)
+ ```sh
+   bash replicate_mta.sh
+   ```  
+
+
 <!-- LICENSE -->
 ## License
 
