@@ -121,6 +121,24 @@ Installation should take ~20 minutes on a normal laptop.
 <!-- USAGE EXAMPLES -->
 ## Usage
 
+Training the baseline model
+ ```sh
+   bash routines/train_baseline.sh EXPERIMENT_NAME SEED
+   ```
+Expected outcome in: 
+ ```sh
+    results/EXPERIMENT_NAME
+│   ├── catalog
+│   ├── catalog.old
+│   ├── docbook-xml.xml
+│   ├── docbook-xml.xml.old
+│   ├── sgml-data.xml
+│   ├── sgml-data.xml.old
+│   ├── xml-core.xml
+│   └── xml-core.xml.old
+         
+   ```
+
  ```sh
    python train_multitask_adversarial.py GPU_INDEX EXPERIMENT_NAME UNDESIRED_TARGET DESIRED_TARGETS
    ```
