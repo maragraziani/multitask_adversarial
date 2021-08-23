@@ -128,7 +128,9 @@ Installation should take ~20 minutes on a normal laptop.
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-To train the baseline model rerun the command below by replacing the elements in the brakets with desired values (e.g. EXPERIMENT_NAME=BASELINE, SEED=1001)
+To train the baseline (with no extra branches) model:
+
+rerun the command below by replacing the elements in the brakets with desired values (e.g. EXPERIMENT_NAME=BASELINE, SEED=1001)
  ```sh
    bash routines/train_baseline.sh [EXPERIMENT_NAME] [SEED]
    ```
@@ -143,8 +145,37 @@ Expected outcome in:
     ├── seed.txt
     ├── training_log.npy
    ```
-To train the multi-task model (without the adversarial branch):
+To train the multi-task model (**without the adversarial branch**):
+
 You can rerun the command below by replacing the elements in the brakets with the desired values (e.g. EXPERIMENT_NAME=MTA, SEED=1001, CONCEPT_LIST="ncount, narea"). Run [-h] option for help.
+
+ ```sh
+   bash routines/train_uncertainty_weighted_multitask.sh [EXPERIMENT_NAME] [SEED] [CONCEPT_LIST]
+   ``` 
+ 
+Expected outcome in: 
+ 
+ ```sh
+├results/[EXPERIMENT_NAME]
+    ├── [EXPERIMENT_NAME]_log.txt
+    ├── best_model.h5
+    ├── lr_monitor.log
+    ├── normalizer.npy
+    ├── normalizing_patch.npy
+    ├── seed.txt
+    ├── training_log.npy
+    ├── ERR.log
+    ├── loss1_rec.log
+    ├── loss2_rec.log
+    ├── train_by_epoch.txt
+    ├── training_log.npy
+    ├── val_by_epoch.txt
+    ├── val_acc_log.npy
+   ```
+   
+To train the multi-task adversarial model (**including the adversarial branch (adversarial to WSI acquisition center)**):
+
+Rerun the command below by replacing the elements in the brakets with the desired values (e.g. EXPERIMENT_NAME=MTA, SEED=1001, CONCEPT_LIST="domain, ncount, narea"). Run [-h] option for help.
 
  ```sh
    bash routines/train_uncertainty_weighted_mta.sh [EXPERIMENT_NAME] [SEED] [CONCEPT_LIST]
