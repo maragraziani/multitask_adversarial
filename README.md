@@ -143,10 +143,13 @@ Expected outcome in:
     ├── seed.txt
     ├── training_log.npy
    ```
-To train the multi-task adversarial model rerun the command below by replacing the elements in the brakets with desired values (e.g. EXPERIMENT_NAME=MTA, SEED=1001, CONCEPT_LIST=ncount, narea)
+To train the multi-task model (without the adversarial branch):
+You can rerun the command below by replacing the elements in the brakets with the desired values (e.g. EXPERIMENT_NAME=MTA, SEED=1001, CONCEPT_LIST="ncount, narea"). Run [-h] option for help.
+
  ```sh
    bash routines/train_uncertainty_weighted_mta.sh [EXPERIMENT_NAME] [SEED] [CONCEPT_LIST]
-   ```
+   ``` 
+ 
 Expected outcome in: 
  
  ```sh
