@@ -117,6 +117,13 @@ Installation should take ~20 minutes on a normal laptop.
     pip install keras==2.2.4 setproctitle
     pip install -U --force-reinstall --no-dependencies git+https://github.com/datumbox/keras@bugfix/trainable_bn 
     ```
+3. Install further dependencies 
+    ```sh
+    cd lib/TASK_2_UC1
+    git clone https://github.com/medgift/PROCESS_L2.git
+    mv PROCESS_L2/* .
+    
+     ```
 
 <!-- USAGE EXAMPLES -->
 ## Usage
