@@ -105,14 +105,16 @@ To get a local copy up and running follow these simple steps.
 This code was developed in Python 3.6 and using Tensorflow 2. You will also need some standard packages to replicate the experiments. Follow the instructions in **Installation** to set the environment 
 
 ### Installation
-
+Installation should take ~20 minutes on a normal laptop.
 1. Clone the repo
    ```sh
    git clone https://github.com/maragraziani/multitask_adversarial
    ```
 2. Install python packages with pip 
     ```sh
-    pip install numpy pandas matplotlib h5py seaborn scikit-image 
+    pip install -r requirements.txt
+    pip install https://storage.googleapis.com/tensorflow/mac/cpu/tensorflow-1.8.0-py3-none-any.whl
+    pip install keras==2.2.4
     ```
 
 <!-- USAGE EXAMPLES -->
