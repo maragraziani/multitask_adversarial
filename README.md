@@ -121,25 +121,47 @@ Installation should take ~20 minutes on a normal laptop.
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Training the baseline model
+To train the baseline model rerun the command below by replacing the elements in the brakets with desired values (e.g. EXPERIMENT_NAME=BASELINE, SEED=1001)
  ```sh
-   bash routines/train_baseline.sh EXPERIMENT_NAME SEED
+   bash routines/train_baseline.sh [EXPERIMENT_NAME] [SEED]
    ```
 Expected outcome in: 
  ```sh
-    results/EXPERIMENT_NAME
-│   ├── catalog
-│   ├── catalog.old
-│   ├── docbook-xml.xml
-│   ├── docbook-xml.xml.old
-│   ├── sgml-data.xml
-│   ├── sgml-data.xml.old
-│   ├── xml-core.xml
-│   └── xml-core.xml.old
-         
+├results/[EXPERIMENT_NAME]
+    ├── [EXPERIMENT_NAME]_log.txt
+    ├── best_model.h5
+    ├── lr_monitor.log
+    ├── normalizer.npy
+    ├── normalizing_patch.npy
+    ├── seed.txt
+    ├── training_log.npy
    ```
-
+To train the multi-task adversarial model rerun the command below by replacing the elements in the brakets with desired values (e.g. EXPERIMENT_NAME=MTA, SEED=1001, CONCEPT_LIST=ncount, narea)
  ```sh
+   bash routines/train_uncertainty_weighted_mta.sh [EXPERIMENT_NAME] [SEED] [CONCEPT_LIST]
+   ```
+Expected outcome in: 
+ 
+ ```sh
+├results/[EXPERIMENT_NAME]
+    ├── [EXPERIMENT_NAME]_log.txt
+    ├── best_model.h5
+    ├── lr_monitor.log
+    ├── normalizer.npy
+    ├── normalizing_patch.npy
+    ├── seed.txt
+    ├── training_log.npy
+    ├── ERR.log
+    ├── loss1_rec.log
+    ├── loss2_rec.log
+    ├── train_by_epoch.txt
+    ├── training_log.npy
+    ├── val_by_epoch.txt
+    ├── val_acc_log.npy
+   ```
+   
+The single script can be called as follows:
+    ```sh 
    python train_multitask_adversarial.py GPU_INDEX EXPERIMENT_NAME UNDESIRED_TARGET DESIRED_TARGETS
    ```
  For example will run the CNN with domain-adversarial training and the additional learning of nuclei count:
