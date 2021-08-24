@@ -3,42 +3,85 @@ bash routines/train_uncertainty_weighted_multitask.sh NAREA_822 822 narea
 bash routines/train_uncertainty_weighted_multitask.sh NAREA_1139 1139 narea
 bash routines/train_uncertainty_weighted_multitask.sh NAREA_2409 2409 narea
 bash routines/train_uncertainty_weighted_multitask.sh NAREA_2009 2009 narea
+bash routines/train_uncertainty_weighted_multitask.sh NAREA_789 789 narea
+bash routines/train_uncertainty_weighted_multitask.sh NAREA_456 456 narea
+bash routines/train_uncertainty_weighted_multitask.sh NAREA_123 123 narea
+bash routines/train_uncertainty_weighted_multitask.sh NAREA_369 369 narea
+bash routines/train_uncertainty_weighted_multitask.sh NAREA_741 741 narea
+#
 bash routines/train_uncertainty_weighted_multitask.sh NCOUNT 1001 ncount
 bash routines/train_uncertainty_weighted_multitask.sh NCOUNT_822 822 ncount
 bash routines/train_uncertainty_weighted_multitask.sh NCOUNT_1139 1139 ncount
 bash routines/train_uncertainty_weighted_multitask.sh NCOUNT_2409 2409 ncount
 bash routines/train_uncertainty_weighted_multitask.sh NCOUNT_2009 2009 ncount
+bash routines/train_uncertainty_weighted_multitask.sh NCOUNT_789 789 ncount
+bash routines/train_uncertainty_weighted_multitask.sh NCOUNT_456 456 ncount
+bash routines/train_uncertainty_weighted_multitask.sh NCOUNT_123 123 ncount
+bash routines/train_uncertainty_weighted_multitask.sh NCOUNT_369 369 ncount
+bash routines/train_uncertainty_weighted_multitask.sh NCOUNT_741 741 ncount
+#
 bash routines/train_uncertainty_weighted_multitask.sh CONTRAST 1001 full_contrast
 bash routines/train_uncertainty_weighted_multitask.sh CONTRAST_822 822 full_contrast
 bash routines/train_uncertainty_weighted_multitask.sh CONTRAST_1139 1139 full_contrast
 bash routines/train_uncertainty_weighted_multitask.sh CONTRAST_2409 2409 full_contrast
 bash routines/train_uncertainty_weighted_multitask.sh CONTRAST_2009 2009 full_contrast
+bash routines/train_uncertainty_weighted_multitask.sh CONTRAST_789 789 full_contrast
+bash routines/train_uncertainty_weighted_multitask.sh CONTRAST_456 456 full_contrast
+bash routines/train_uncertainty_weighted_multitask.sh CONTRAST_123 123 full_contrast
+bash routines/train_uncertainty_weighted_multitask.sh CONTRAST_369 369 full_contrast
+bash routines/train_uncertainty_weighted_multitask.sh CONTRAST_741 741 full_contrast
+#
 bash routines/train_uncertainty_weighted_multitask.sh NAREA 1001 narea
 bash routines/train_uncertainty_weighted_multitask.sh NAREA_822 822 narea
 bash routines/train_uncertainty_weighted_multitask.sh NAREA_1139 1139 narea
 bash routines/train_uncertainty_weighted_multitask.sh NAREA_2409 2409 narea
 bash routines/train_uncertainty_weighted_multitask.sh NAREA_2009 2009 narea
+bash routines/train_uncertainty_weighted_multitask.sh NAREA_789 789 narea
+bash routines/train_uncertainty_weighted_multitask.sh NAREA_456 456 narea
+bash routines/train_uncertainty_weighted_multitask.sh NAREA_123 123 narea
+bash routines/train_uncertainty_weighted_multitask.sh NAREA_369 369 narea
+bash routines/train_uncertainty_weighted_multitask.sh NAREA_741 741 narea
 #
 bash routines/train_uncertainty_weighted_mta.sh DOMAIN 1001 domain
 bash routines/train_uncertainty_weighted_mta.sh DOMAIN_822 822 domain
 bash routines/train_uncertainty_weighted_mta.sh DOMAIN_1139 1139 domain
 bash routines/train_uncertainty_weighted_mta.sh DOMAIN_2409 2409 domain
 bash routines/train_uncertainty_weighted_mta.sh DOMAIN_2009 2009 domain
+bash routines/train_uncertainty_weighted_mta.sh DOMAIN_789 789 domain
+bash routines/train_uncertainty_weighted_mta.sh DOMAIN_456 456 domain
+bash routines/train_uncertainty_weighted_mta.sh DOMAIN_123 123 domain
+bash routines/train_uncertainty_weighted_mta.sh DOMAIN_369 369 domain
+bash routines/train_uncertainty_weighted_mta.sh DOMAIN_741 741 domain
 #
 bash routines/train_uncertainty_weighted_mta.sh NCOUNT_DOMAIN 1001 ncount,domain
 bash routines/train_uncertainty_weighted_mta.sh NCOUNT_DOMAIN_822 822 ncount,domain
 bash routines/train_uncertainty_weighted_mta.sh NCOUNT_DOMAIN_1139 1139 ncount,domain
 bash routines/train_uncertainty_weighted_mta.sh NCOUNT_DOMAIN_2409 2409 ncount,domain
 bash routines/train_uncertainty_weighted_mta.sh NCOUNT_DOMAIN_2009 2009 ncount,domain
+bash routines/train_uncertainty_weighted_mta.sh NCOUNT_DOMAIN_789 789 ncount,domain
+bash routines/train_uncertainty_weighted_mta.sh NCOUNT_DOMAIN_456 456 ncount,domain
+bash routines/train_uncertainty_weighted_mta.sh NCOUNT_DOMAIN_123 123 ncount,domain
+bash routines/train_uncertainty_weighted_mta.sh NCOUNT_DOMAIN_369 369 ncount,domain
+bash routines/train_uncertainty_weighted_mta.sh NCOUNT_DOMAIN_741 741 ncount,domain
 #
 bash routines/train_uncertainty_weighted_mta.sh NAREA_NCOUNT_DOMAIN 1001 narea,ncount,domain
 bash routines/train_uncertainty_weighted_mta.sh NAREA_NCOUNT_DOMAIN_822 822 narea,ncount,domain
 bash routines/train_uncertainty_weighted_mta.sh NAREA_NCOUNT_DOMAIN_1139 1139 narea,ncount,domain
 bash routines/train_uncertainty_weighted_mta.sh NAREA_NCOUNT_DOMAIN_2409 2409 narea,ncount,domain
 bash routines/train_uncertainty_weighted_mta.sh NAREA_NCOUNT_DOMAIN_2009 2009 narea,ncount,domain
+bash routines/train_uncertainty_weighted_mta.sh NAREA_NCOUNT_DOMAIN_789 789 narea,ncount,domain
+bash routines/train_uncertainty_weighted_mta.sh NAREA_NCOUNT_DOMAIN_456 456 narea,ncount,domain
+bash routines/train_uncertainty_weighted_mta.sh NAREA_NCOUNT_DOMAIN_123 123 narea,ncount,domain
+bash routines/train_uncertainty_weighted_mta.sh NAREA_NCOUNT_DOMAIN_369 369 narea,ncount,domain
+bash routines/train_uncertainty_weighted_mta.sh NAREA_NCOUNT_DOMAIN_741 741 narea,ncount,domain
 #
 bash routines/train_uncertainty_weighted_mta.sh ALL 1001 full_contrast,narea,ncount,domain
 bash routines/train_uncertainty_weighted_mta.sh ALL_822 822 full_contrast,narea,ncount,domain
 bash routines/train_uncertainty_weighted_mta.sh ALL_1139 1139 full_contrast,narea,ncount,domain
 bash routines/train_uncertainty_weighted_mta.sh ALL_2409 2409 full_contrast,narea,ncount,domain
 bash routines/train_uncertainty_weighted_mta.sh ALL_2009 2009 full_contrast,narea,ncount,domain
+bash routines/train_uncertainty_weighted_mta.sh ALL_789 789 full_contrast,narea,ncount,domain
+bash routines/train_uncertainty_weighted_mta.sh ALL_456 456 full_contrast,narea,ncount,domain
+bash routines/train_uncertainty_weighted_mta.sh ALL_123 123 full_contrast,narea,ncount,domain
+bash routines/train_uncertainty_weighted_mta.sh ALL_369 369 full_contrast,narea,ncount,domain
+bash routines/train_uncertainty_weighted_mta.sh ALL_741 741 full_contrast,narea,ncount,domain
