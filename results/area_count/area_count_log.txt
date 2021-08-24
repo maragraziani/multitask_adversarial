@@ -1,0 +1,15 @@
+doc/demo_train_shuffle.csvdoc/demo_val_shuffle.csvdoc/demo_test_shuffle.csvdoc/demo_test2_shuffle.csv./doc/demo_data_shuffle.csvTrainable layers: conv2d_88
+conv2d_89
+conv2d_92
+conv2d_93
+conv2d_86
+global_average_pooling2d_1
+finetuned_features1
+dropout_1
+finetuned_features2
+dropout_2
+finetuned_features3
+dropout_3
+predictions
+extra_narea
+extra_ncount

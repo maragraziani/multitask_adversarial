@@ -1,3 +1,21 @@
+Help()
+{
+   # Display Help
+   echo "Baseline Architecture (without extra branches)"
+   echo
+   echo "Usage: "
+   echo "train_baseline.sh [SEED] [EXPERIMENT_TYPE]"
+   echo
+}
+
+while getopts ":h" option; do
+   case $option in
+      h) # display Help
+         Help
+         exit;
+   esac
+done
+
 EXPERIMENT_TYPE=$1
 SEED=$2
 FILE=results/$EXPERIMENT_TYPE

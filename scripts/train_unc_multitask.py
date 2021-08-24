@@ -60,18 +60,18 @@ python train_cnn.py 0 1001
 
 """loading dataset files"""
 #rank = MPI.COMM_WORLD.rank
-cam16 = hd.File('/home/mara/adversarialMICCAI/data/ultrafast/cam16_500/patches.h5py',  'r', libver='latest', swmr=True)
-all500 = hd.File('/home/mara/adversarialMICCAI/data/ultrafast/all500/patches.h5py',  'r', libver='latest', swmr=True)
-extra17 = hd.File('/home/mara/adversarialMICCAI/data/ultrafast/extra17/patches.h5py',  'r', libver='latest', swmr=True)
-tumor_extra17=hd.File('/home/mara/adversarialMICCAI/data/ultrafast/1129-1155/patches.h5py', 'r', libver='latest', swmr=True)
-test2 = hd.File('/home/mara/adversarialMICCAI/data/ultrafast/test_data2/patches.h5py', 'r', libver='latest', swmr=True)
-pannuke= hd.File('/home/mara/adversarialMICCAI/data/ultrafast/pannuke/patches_fix.h5py', 'r', libver='latest', swmr=True)
+#cam16 = hd.File('/home/mara/adversarialMICCAI/data/ultrafast/cam16_500/patches.h5py',  'r', libver='latest', swmr=True)
+#all500 = hd.File('/home/mara/adversarialMICCAI/data/ultrafast/all500/patches.h5py',  'r', libver='latest', swmr=True)
+#extra17 = hd.File('/home/mara/adversarialMICCAI/data/ultrafast/extra17/patches.h5py',  'r', libver='latest', swmr=True)
+#tumor_extra17=hd.File('/home/mara/adversarialMICCAI/data/ultrafast/1129-1155/patches.h5py', 'r', libver='latest', swmr=True)
+#test2 = hd.File('/home/mara/adversarialMICCAI/data/ultrafast/test_data2/patches.h5py', 'r', libver='latest', swmr=True)
+#pannuke= hd.File('/home/mara/adversarialMICCAI/data/ultrafast/pannuke/patches_fix.h5py', 'r', libver='latest', swmr=True)
 
-global data
-data={'cam16':cam16,'all500':all500,'extra17':extra17, 'tumor_extra17':tumor_extra17, 'test_data2': test2, 'pannuke':pannuke}
-
+#global data
+#data={'cam16':cam16,'all500':all500,'extra17':extra17, 'tumor_extra17':tumor_extra17, 'test_data2': test2, 'pannuke':pannuke}
+data = hd.File('data/demo_file.h5py', 'r')
 global concept_db
-concept_db = hd.File('data/normalized_cmeasures/concept_values_def.h5py','r', libver='latest', swmr=True)
+concept_db = hd.File('data/demo_concept_measures.h5py', 'r')
 #concept_db = hd.File('/mnt/nas2/results/IntermediateResults/Mara/MICCAI2020/MELBA_only_contrast_n.hd','r')
 #/mnt/nas2/results/IntermediateResults/Mara/MICCAI2020/MELBA_normalized_concepts.hd', 'r')
 # Note: nuclei_concepts not supported yet
@@ -112,28 +112,29 @@ setproctitle.setproctitle('{}'.format(EXPERIMENT_TYPE))
 np.random.seed(seed)
 tf.set_random_seed(seed)
 
-# DATA SPLIT CSVs 
-train_csv=open('/mnt/nas2/results/IntermediateResults/Camelyon/train_shuffle.csv', 'r') # How is the encoding of .csv files ?
-val_csv=open('/mnt/nas2/results/IntermediateResults/Camelyon/val_shuffle.csv', 'r')
-test_csv=open('/mnt/nas2/results/IntermediateResults/Camelyon/test_shuffle.csv', 'r')
+# DATA SPLIT CSVs
+train_csv=open('doc/demo_train_shuffle.csv', 'r') 
+val_csv=open('doc/demo_val_shuffle.csv', 'r')
+test_csv=open('doc/demo_test_shuffle.csv', 'r')
 train_list=train_csv.readlines()
 val_list=val_csv.readlines()
 test_list=test_csv.readlines()
-test2_csv = open('/mnt/nas2/results/IntermediateResults/Camelyon/test2_shuffle.csv', 'r')
+test2_csv = open('doc/demo_test2_shuffle.csv', 'r')
 test2_list=test2_csv.readlines()
 test2_csv.close()
 train_csv.close()
 val_csv.close()
 test_csv.close()
-data_csv=open('./doc/data_shuffle.csv', 'r')
+#data_csv=open('./doc/pannuke_data_shuffle.csv')
+data_csv=open('./doc/demo_data_shuffle.csv')
 data_list=data_csv.readlines()
 data_csv.close()
 flog=open("{}/{}_log.txt".format(new_folder, EXPERIMENT_TYPE), 'w')
-flog.write('/mnt/nas2/results/IntermediateResults/Camelyon/train_shuffle.csv')
-flog.write('/mnt/nas2/results/IntermediateResults/Camelyon/val_shuffle.csv')
-flog.write('/mnt/nas2/results/IntermediateResults/Camelyon/test_shuffle.csv')
-flog.write('/mnt/nas2/results/IntermediateResults/Camelyon/test2_shuffle.csv')
-flog.write('./doc/pannuke_data_shuffle.csv')
+flog.write('doc/demo_train_shuffle.csv')
+flog.write('doc/demo_val_shuffle.csv')
+flog.write('doc/demo_test_shuffle.csv')
+flog.write('doc/demo_test2_shuffle.csv')
+flog.write('./doc/demo_data_shuffle.csv')
 flog.close()
 
 # STAIN NORMALIZATION
@@ -150,7 +151,7 @@ def normalize_patch(patch, normalizer):
 # LOAD DATA NORMALIZER
 global normalizer
 db_name, entry_path, patch_no = get_keys(data_list[0])
-normalization_reference_patch = data[db_name][entry_path][patch_no]
+normalization_reference_patch = data[db_name][entry_path][str(patch_no)][:]
 normalizer = get_normalizer(normalization_reference_patch, save_folder=new_folder)
 """
 Batch generators: 
@@ -183,7 +184,7 @@ class DataGenerator(keras.utils.Sequence):
         self.shuffle=shuffle
         self.concept = concept
         self.data_type=data_type
-        print 'data type:', data_type
+        #print 'data type:', data_type
         self.on_epoch_end()
         
     def __len__(self):
@@ -260,7 +261,7 @@ def get_batch_data(patch_list, batch_size=32):
                 batch_concept_values=np.asarray(batch_concept_values, dtype=np.float32)
                 generator_output.append(batch_concept_values)
             #batch_domain=keras.utils.to_categorical(batch_domain, num_classes=6)
-            yield generator_output, None
+            yield generator_output#, None
             
 def get_test_batch(patch_list, batch_size=32):
     num_samples=len(patch_list)
@@ -291,7 +292,7 @@ def get_test_batch(patch_list, batch_size=32):
                     batch_concept_values.append(get_concept_measure(db_name, entry_path, patch_no, measure_type=c))
                 batch_concept_values=np.asarray(batch_concept_values, dtype=np.float32)
                 generator_output.append(batch_concept_values)
-            yield generator_output, None
+            yield generator_output#, None
 """         
 Building guidable model 
 """
@@ -314,8 +315,13 @@ feature_output = keras.layers.Dropout(0.8, noise_shape=None, seed=None)(feature_
 feature_output = Dense(256, activation='relu', name='finetuned_features3',kernel_regularizer=keras.regularizers.l2(0.01))(feature_output)
 feature_output = keras.layers.Dropout(0.8, noise_shape=None, seed=None)(feature_output)
 finetuning = Dense(1,name='predictions')(feature_output)
-regression_output = keras.layers.Dense(6, activation = keras.layers.Activation('linear'), name='concept_regression')(feature_output)
-model = Model(input=base_model.input, output=[finetuning, regression_output])
+#regression_output = keras.layers.Dense(6, activation = keras.layers.Activation('linear'), name='concept_regression')(feature_output)
+output_nodes=[finetuning]
+for c in c_list:
+        if c!='domain':
+            concept_layer=  keras.layers.Dense(1, activation = keras.layers.Activation('linear'), name='extra_{}'.format(c.strip(' ')))(feature_output)
+            output_nodes.append(concept_layer)
+model = Model(input=base_model.input, output=output_nodes)
 # Callbacks
 def compute_mse(labels, predictions):
     errors = labels - predictions
@@ -473,14 +479,36 @@ class CustomMultiLossLayer(Layer):
         self.add_loss(loss, inputs=inputs)
         # We won't actually use the output.
         return K.concatenate(inputs, -1)
-def get_trainable_model(baseline_model):
+def get_trainable_model(baseline_model): #over wrote
     inp = keras.layers.Input(shape=(224,224,3,), name='inp')
     y1_pred, y2_pred = baseline_model(inp)
     y1_true=keras.layers.Input(shape=(1,),name='y1_true')
     y2_true=keras.layers.Input(shape=(1,),name='y2_true')
     out = CustomMultiLossLayer(nb_outputs=2, new_folder=new_folder)([y1_true, y2_true, y1_pred, y2_pred])
     return Model(input=[inp, y1_true, y2_true], output=out)
+def get_trainable_model(baseline_model):
+    inp = keras.layers.Input(shape=(224,224,3,), name='inp')
+    outputs = baseline_model(inp)
+    n_extra_concepts = len(outputs) -1
+    print(n_extra_concepts)
+    y_true=keras.layers.Input(shape=(1,),name='y_true')
+    #domain_true=keras.layers.Input(shape=(7,),name='domain_true')
+    extra_concepts_true=[]
+    for i in range(n_extra_concepts):
+        print('extra_{}'.format(i))
+        extra_true=keras.layers.Input(shape=(1,), name='extra_{}'.format(i))
+        extra_concepts_true.append(extra_true)
+    new_model_input=[inp, y_true]#, domain_true]
+    loss_inputs=[y_true]#, domain_true]
+    for i in range(len(extra_concepts_true)):
+        new_model_input.append(extra_concepts_true[i])
+        loss_inputs.append(extra_concepts_true[i])
+    for out_ in outputs:
+        loss_inputs.append(out_)
+    out = CustomMultiLossLayer(nb_outputs=len(outputs), new_folder=new_folder)(loss_inputs)
+    return Model(input=new_model_input, output=out)
 
+#import pdb; pdb.set_trace()
 """ Get trainable model with Hepistemic Uncertainty Weighted Loss """
 t_m = get_trainable_model(model)
 #t_m.summary()
@@ -542,6 +570,7 @@ verbose=True
 #    verbose=True
 
 #print("training on gpu: {}".format(hvd.rank()))
+#import pdb; pdb.set_trace()
 history = t_m.fit_generator(train_generator,
                     steps_per_epoch= len(data_list) // (BATCH_SIZE ),#// hvd.size()),
                     callbacks=callbacks,

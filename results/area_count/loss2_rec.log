@@ -1,0 +1,2 @@
+Tensor("custom_multi_loss_layer_1/add_6:0", shape=(), dtype=float32)
+Tensor("custom_multi_loss_layer_1/add_8:0", shape=(), dtype=float32)
