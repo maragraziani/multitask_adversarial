@@ -213,7 +213,7 @@ It is called in this way, for example, to run the CNN with domain-adversarial tr
    python train_multitask_adversarial.py 0 DOMAIN-COUNT  domain count
   ```
   
-For more examples, please refer to the [Notebooks](https://github.com/maragraziani/multitask_adversarial/tree/main/notebooks) folder
+For more examples, please refer to the [Notebooks](https://github.com/maragraziani/multitask_adversarial/tree/master/notebooks) folder
 
 # Reproducibility
 
