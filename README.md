@@ -129,6 +129,8 @@ Installation should take ~20 minutes on a normal laptop. Follow the steps below.
 <!-- USAGE EXAMPLES -->
 ## Usage
 
+Training time may take a few hours (5-6 hours) depending on the model being trained and on the chosen configuration.
+
 ##### To train the baseline (with no extra branches) model:
 
 Rerun the command below by replacing the elements in the brakets with desired values (e.g. EXPERIMENT_NAME=BASELINE, SEED=1001). Run [-h] option for help.
