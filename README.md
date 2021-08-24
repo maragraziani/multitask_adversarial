@@ -204,11 +204,7 @@ Expected outcome:
     ├── val_acc_log.npy
    ```
    
-The main python script is train_multitask_adversarial.py and it is called by the bash routines as in the following:
-    ```sh 
-   python train_multitask_adversarial.py GPU_INDEX EXPERIMENT_NAME UNDESIRED_TARGET DESIRED_TARGETS
-  ```
-   ```
+The main python script is train_multitask_adversarial.py.
 It is called in this way, for example, to run the CNN with domain-adversarial training and the additional (desired) learning target of nuclei count:
 
  ```sh 
@@ -221,12 +217,12 @@ For more examples, please refer to the [Notebooks](https://github.com/maragrazia
 
 To replicate baseline results (line ID 1 in Table 2)
  ```sh
-   bash replicate_baseline.sh
+   bash routines/replicate_baseline.sh
    ```
 To replicate multi-task adversarial results (line IDs 2 to 8 in Table 2)
 
  ```sh
-   bash replicate_mta.sh
+   bash routines/replicate_mta.sh
    ```  
 To replicate Figure 4, see the notebook [notebooks/visualize/UMAP_p3.ipynb](https://github.com/maragraziani/multitask_adversarial/blob/master/notebooks/visualize/UMAP_p3.ipynb)
 
