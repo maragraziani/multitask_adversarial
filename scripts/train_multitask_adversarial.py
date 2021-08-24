@@ -1,8 +1,13 @@
 """
-RUN SEQUENTIAL
-python hvd_train_unc.py SEED EXPERIMENT_TYPE 
-"""
+Multi-task Adversarial CNN Training
+Mara Graziani
 
+script usage: 
+python train_multitask_adversarial [SEED] [EXPERIMENT_NAME] [UNDESIRED_CONCEPT],[DESIRED_CONCEPTS]
+
+example:
+python train_multitask_adverarial 1001 domain_nuclei domain,nuclei
+"""
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import warnings
@@ -41,24 +46,20 @@ config.gpu_options.visible_device_list = str(0)# str(hvd.local_rank())
 keras.backend.set_session(tf.Session(config=config))
 verbose=1 
 
-#rank = MPI.COMM_WORLD.rank
+# original datasets
 #cam16 = hd.File('/home/mara/adversarialMICCAI/data/ultrafast/cam16_500/patches.h5py',  'r', libver='latest', swmr=True)
 #all500 = hd.File('/home/mara/adversarialMICCAI/data/ultrafast/all500/patches.h5py',  'r', libver='latest', swmr=True)
 #extra17 = hd.File('/home/mara/adversarialMICCAI/data/ultrafast/extra17/patches.h5py',  'r', libver='latest', swmr=True)
 #tumor_extra17=hd.File('/home/mara/adversarialMICCAI/data/ultrafast/1129-1155/patches.h5py', 'r', libver='latest', swmr=True)
 #test2 = hd.File('/home/mara/adversarialMICCAI/data/ultrafast/test_data2/patches.h5py', 'r', libver='latest', swmr=True)
 #pannuke= hd.File('/home/mara/adversarialMICCAI/data/ultrafast/pannuke/patches_fix.h5py', 'r', libver='latest', swmr=True)
-
 #global data
 #data={'cam16':cam16,'all500':all500,'extra17':extra17, 'tumor_extra17':tumor_extra17, 'test_data2': test2, 'pannuke':pannuke}
+
 data = hd.File('data/demo_file.h5py', 'r')
 global concept_db
 concept_db = hd.File('data/demo_concept_measures.h5py', 'r')
 #concept_db = hd.File('/mnt/nas2/results/IntermediateResults/Mara/MICCAI2020/MELBA_only_contrast_n.hd','r')
-#/mnt/nas2/results/IntermediateResults/Mara/MICCAI2020/MELBA_normalized_concepts.hd', 'r')
-# Note: nuclei_concepts not supported yet
-#global nuclei_concepts
-#nuclei_concepts=hd.File('/mnt/nas2/results/IntermediateResults/Mara/MICCAI2020/normalized_nuclei_concepts_db_new_try_def.hdf5','r')S
 
 CONFIG_FILE = 'doc/config.cfg'
 COLOR = True
@@ -102,7 +103,6 @@ test2_csv.close()
 train_csv.close()
 val_csv.close()
 test_csv.close()
-#data_csv=open('./doc/pannuke_data_shuffle.csv')
 data_csv=open('./doc/demo_data_shuffle.csv')
 data_list=data_csv.readlines()
 data_csv.close()
@@ -120,7 +120,6 @@ def get_normalizer(patch, save_folder=''):
     normalizer.fit(patch)
     np.save('{}/normalizer'.format(save_folder),normalizer)
     np.save('{}/normalizing_patch'.format(save_folder), patch)
-    #print('Normalisers saved to disk.')
     return normalizer
 def normalize_patch(patch, normalizer):
     return np.float64(normalizer.transform(np.uint8(patch)))
@@ -578,46 +577,15 @@ model.set_weights(base_model_weights)
 t_m_ = get_trainable_model(model)
 t_m = custom_train_model(t_m_, epochs=20, 
                          lr=1e-4, grl_layer=model.grl_layer)
-"""
-# 20 epochs: gradient reversal
-# not run yet
-#print("phase 3")
-#main_task_weight=1. 
-#domain_weight = 1e-2
-#model = get_baseline_model(hp_lambda=-1.)
-#t_m = get_trainable_model(model)
-#t_m = custom_train_model(t_m, epochs=5s, lr=1e-4, grl_layer=model.grl_layer)
-#base_model_weights=model.get_weights()
 
-main_task_weight=1.
-domain_weight=1. #0. #(higher learning rate is needed for this task)
-model=get_baseline_model(hp_lambda=10.)
-model.set_weights(base_model_weights)
-#model.compile(opt)
-t_m_ = get_trainable_model(model)
-t_m = custom_train_model(t_m_,epochs=5, lr=1e-4, grl_layer=model.grl_layer)
-# We run some more iterations on the main task
-main_task_weight=1. 
-domain_weight = 1
-model=get_baseline_model(hp_lambda=10.)
-model.set_weights(base_model_weights)
-#model.compile(opt)
-t_m = get_trainable_model(model)
-t_m = custom_train_model(t_m, epochs=2, lr=1e-4)
-"""
 # end of scheduling 
 end_time=time.time()
 total_training_time = end_time - starting_time 
 #
-#print(history.history.keys())
 log_file=open("{}/{}_log.txt".format(new_folder, EXPERIMENT_TYPE), 'a')
 log_file.write('Time elapsed for model training: {}'.format(total_training_time))
 log_file.close()
-#np.save('{}/training_log'.format(new_folder), history.history)
 np.save('{}/val_acc_log'.format(new_folder), report_val_acc)
 np.save('{}/val_r2_log'.format(new_folder), report_val_r2)
 print("++++++ HEPISTEMIC UNCERTAINTY WEIGHTED LOSS TRAINING: OK WE'RE DONE OVER HERE ++++++ FOLDER: {} ++++++ GOOD JOB. ".format(new_folder))
 exit(0)
-
-
-# In[ ]:

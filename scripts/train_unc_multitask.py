@@ -1,5 +1,6 @@
-#import matplotlib as mpl   
-#mpl.use('Agg')
+"""
+Multi-task CNN with Uncertainty-based Weighting by Kendall et al. (2017)
+"""
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import warnings
@@ -12,7 +13,6 @@ SERVER_NAME = 'ultrafast'
 import time
 import sys
 import shutil
-## Adding PROCESS_UC1 utilities
 sys.path.append('lib/TASK_2_UC1/')
 from models import *
 from util import otsu_thresholding
@@ -24,16 +24,6 @@ import math
 import keras.callbacks as callbacks
 from keras.callbacks import Callback
 
-"""
-RUN SEQUENTIAL
-
-python hvd_train_unc.py SEED EXPERIMENT_TYPE 
-
-RUN PARALLEL 
-
-see hvd_unc_train.sh
-"""
-
 EXPERIMENT_TYPE=sys.argv[2]
 CONCEPT=sys.argv[3]
 c = CONCEPT.split(',')
@@ -43,23 +33,14 @@ for c_ in c:
     c_list.append(c_.strip('[').strip(']'))
 print 'concept', CONCEPT, c, c_list
 CONCEPT=c_list
-# Horovod: initialize Horovod.
-#hvd.init()
-# Horovod: pin GPU to be used to process local rank (one GPU per process)
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
 config.gpu_options.visible_device_list = str(0)# str(hvd.local_rank())
 keras.backend.set_session(tf.Session(config=config))
 
-verbose=1 #if hvd.local_rank()==1 else 0
+verbose=1 
 
-"""
-python train_cnn.py GPU_DEVICE RANDOM_SEED
-python train_cnn.py 0 1001
-"""
-
-"""loading dataset files"""
-#rank = MPI.COMM_WORLD.rank
+# Original Datasets
 #cam16 = hd.File('/home/mara/adversarialMICCAI/data/ultrafast/cam16_500/patches.h5py',  'r', libver='latest', swmr=True)
 #all500 = hd.File('/home/mara/adversarialMICCAI/data/ultrafast/all500/patches.h5py',  'r', libver='latest', swmr=True)
 #extra17 = hd.File('/home/mara/adversarialMICCAI/data/ultrafast/extra17/patches.h5py',  'r', libver='latest', swmr=True)
@@ -69,19 +50,10 @@ python train_cnn.py 0 1001
 
 #global data
 #data={'cam16':cam16,'all500':all500,'extra17':extra17, 'tumor_extra17':tumor_extra17, 'test_data2': test2, 'pannuke':pannuke}
-data = hd.File('data/demo_file.h5py', 'r')
+
+data = hd.File('data/demo_file.h5py', 'r') # Replace here with your data
 global concept_db
 concept_db = hd.File('data/demo_concept_measures.h5py', 'r')
-#concept_db = hd.File('/mnt/nas2/results/IntermediateResults/Mara/MICCAI2020/MELBA_only_contrast_n.hd','r')
-#/mnt/nas2/results/IntermediateResults/Mara/MICCAI2020/MELBA_normalized_concepts.hd', 'r')
-# Note: nuclei_concepts not supported yet
-#global nuclei_concepts
-#nuclei_concepts=hd.File('/mnt/nas2/results/IntermediateResults/Mara/MICCAI2020/normalized_nuclei_concepts_db_new_try_def.hdf5','r')
-
-
-# Note: with uncertainty training we do not need CONCEPT ALPHAS (or LAMBDAs?) anymore
-# We still need to specify the learning rate of the gradient reversal (if we want to change it) or of the additional task.
-# I think we want to reduce it of a tenth or so
 
 #SYSTEM CONFIGS 
 CONFIG_FILE = 'doc/config.cfg'
@@ -89,13 +61,11 @@ COLOR = True
 global new_folder
 new_folder = getFolderName()
 folder_name=EXPERIMENT_TYPE
-new_folder = 'results/'+folder_name #new_folder
-#os.mkdir(new_folder)
+new_folder = 'results/'+folder_name 
 
 # creating an ERR.log file to keep track of issues happened during model run
 global error_log
 error_log=open(new_folder+'/ERR.log', 'w')
-#llg.basicConfig(filename=os.path.join(ne
 BATCH_SIZE = 32
 
 # SAVE FOLD
@@ -112,7 +82,7 @@ setproctitle.setproctitle('{}'.format(EXPERIMENT_TYPE))
 np.random.seed(seed)
 tf.set_random_seed(seed)
 
-# DATA SPLIT CSVs
+# DATA SPLIT CSVs: replace with your splits 
 train_csv=open('doc/demo_train_shuffle.csv', 'r') 
 val_csv=open('doc/demo_val_shuffle.csv', 'r')
 test_csv=open('doc/demo_test_shuffle.csv', 'r')
@@ -125,7 +95,6 @@ test2_csv.close()
 train_csv.close()
 val_csv.close()
 test_csv.close()
-#data_csv=open('./doc/pannuke_data_shuffle.csv')
 data_csv=open('./doc/demo_data_shuffle.csv')
 data_list=data_csv.readlines()
 data_csv.close()
@@ -166,17 +135,15 @@ def get_concept_measure(db_name, entry_path, patch_no, measure_type=''):
     if measure_type=='domain':
         return get_domain(db_name, entry_path, patch_no)
     path=db_name+'/'+entry_path+'/'+str(patch_no)+'/'+measure_type
-    #print path
-    #print concept_db[path]
-    #print concept_db[path][0]
+
     try:
         cm=concept_db[path][0]
         return cm
     except:
         print("[ERR]: {}, {}, {}, {} with path {}".format(db_name, entry_path, patch_no, measure_type, path))
         return 1.
-# BATCH GENERATORS
 
+# BATCH GENERATORS
 class DataGenerator(keras.utils.Sequence):
     def __init__(self, patch_list, concept=CONCEPT, batch_size=32, shuffle=True, data_type=0):
         self.batch_size=batch_size
@@ -215,19 +182,14 @@ class DataGenerator(keras.utils.Sequence):
             batch_x[i]=patch
             batch_y[i]=label
             i+=1
-        #batch_x=np.asarray(batch_x, dtype=np.float32)
-        #batch_y=np.asarray(batch_y, dtype=np.float32)
-        #return [batch_x, batch_y, np.ones(len(patch_list_temp))], None
-        generator_output=[batch_x, batch_y]#np.ones(len(patch_list_temp)
+        generator_output=[batch_x, batch_y]
         for c in self.concept:
             batch_concept_values=np.zeros(len(patch_list_temp))
             i=0
             for line in patch_list_temp:
                 db_name, entry_path, patch_no = get_keys(line)
-                #print 'line: {}, cmeasure: '.format(line),get_concept_measure(db_name, entry_path, patch_no, measure_type=c)
                 batch_concept_values[i]=get_concept_measure(db_name, entry_path, patch_no, measure_type=c)
                 i+=1
-            #print 'bcm: ', batch_concept_values
             generator_output.append(batch_concept_values)
         return generator_output
     
@@ -239,8 +201,6 @@ def get_batch_data(patch_list, batch_size=32):
             batch_x = []
             batch_y = []
             #concepts=['full_contrast','full_correlation','narea', 'ncount','nuclei_contrast','nuclei_correlation']
-            #for c in concepts:
-            #batch_concept_values[c]=[]
             batch_samples=patch_list[offset:offset+batch_size]
             for line in batch_samples[:(num_samples//batch_size)*batch_size]:
                 db_name, entry_path, patch_no = get_keys(line)
@@ -260,7 +220,6 @@ def get_batch_data(patch_list, batch_size=32):
                     batch_concept_values.append(get_concept_measure(db_name, entry_path, patch_no, measure_type=c))
                 batch_concept_values=np.asarray(batch_concept_values, dtype=np.float32)
                 generator_output.append(batch_concept_values)
-            #batch_domain=keras.utils.to_categorical(batch_domain, num_classes=6)
             yield generator_output#, None
             
 def get_test_batch(patch_list, batch_size=32):
@@ -269,17 +228,12 @@ def get_test_batch(patch_list, batch_size=32):
         for offset in range(0,num_samples, batch_size):
             batch_x = []
             batch_y = []
-            #batch_concept_values={}
-            #concepts=['full_contrast','full_correlation','narea', 'ncount','nuclei_contrast','nuclei_correlation']
-            #for c in concepts:
-            #    batch_concept_values[c]=[]
             batch_samples=patch_list[offset:offset+batch_size]
             for line in batch_samples:
                 db_name, entry_path, patch_no = get_keys(line)
                 patch=data[db_name][entry_path][patch_no]
                 patch=normalize_patch(patch, normalizer)
                 patch=keras.applications.inception_v3.preprocess_input(patch)
-                #patch=keras.applications.resnet50.preprocess_input(patch)
                 label = get_test_label(entry_path)
                 batch_x.append(patch)
                 batch_y.append(label)
@@ -292,7 +246,7 @@ def get_test_batch(patch_list, batch_size=32):
                     batch_concept_values.append(get_concept_measure(db_name, entry_path, patch_no, measure_type=c))
                 batch_concept_values=np.asarray(batch_concept_values, dtype=np.float32)
                 generator_output.append(batch_concept_values)
-            yield generator_output#, None
+            yield generator_output
 """         
 Building guidable model 
 """
@@ -559,34 +513,21 @@ t_m.compile(optimizer=opt, #optimizers.SGD(lr=1e-4, decay=1e-6, momentum=0.9, ne
 """
 starting_time = time.time()
 train_generator=DataGenerator(data_list, concept=CONCEPT, batch_size=BATCH_SIZE, data_type=0)
-train_generator2=DataGenerator(data_list, concept=CONCEPT, batch_size=BATCH_SIZE, data_type=1)#get_batch_data(data_list, batch_size=BATCH_SIZE)
-val_generator=DataGenerator(val_list, concept=CONCEPT, batch_size=BATCH_SIZE, data_type=1) #get_test_batch(val_list, batch_size=BATCH_SIZE)
-val_generator2= DataGenerator(val_list, concept=CONCEPT, batch_size=BATCH_SIZE, data_type=1) #get_test_batch(val_list, batch_size=BATCH_SIZE)
-test_generator= DataGenerator(test_list, concept=CONCEPT, batch_size=BATCH_SIZE, data_type=1) #get_test_batch(test_list, batch_size=BATCH_SIZE)
-#train_generator2=Generator(data_list, batch_size=BATCH_SIZE)
+train_generator2=DataGenerator(data_list, concept=CONCEPT, batch_size=BATCH_SIZE, data_type=1) 
+val_generator=DataGenerator(val_list, concept=CONCEPT, batch_size=BATCH_SIZE, data_type=1)  
+val_generator2= DataGenerator(val_list, concept=CONCEPT, batch_size=BATCH_SIZE, data_type=1)  
+test_generator= DataGenerator(test_list, concept=CONCEPT, batch_size=BATCH_SIZE, data_type=1)  
 
 verbose=True
-#if hvd.rank()==0:
-#    verbose=True
-
-#print("training on gpu: {}".format(hvd.rank()))
-#import pdb; pdb.set_trace()
 history = t_m.fit_generator(train_generator,
-                    steps_per_epoch= len(data_list) // (BATCH_SIZE ),#// hvd.size()),
+                    steps_per_epoch= len(data_list) // (BATCH_SIZE ),
                     callbacks=callbacks,
                     epochs=100,
                     verbose=verbose,
                     workers=4,
                     use_multiprocessing=False,
                     validation_data=val_generator,
-                    validation_steps= len(val_list)//BATCH_SIZE) #// hvd.size()) #len(val_list)// (BATCH_SIZE // hvd.size()))
-                           
-#score = hvd.allreduce(model.evaluate_generator(test_generator, BATCH_SIZE, workers=4))
-#if verbose:
-#    print ('Before training val score: ', before_training_score[0], before_training_score[1])
-#    print('Test loss:', score[0])
-#    print('Test accuracy:', score[1])
-    
+                    validation_steps= len(val_list)//BATCH_SIZE) 
 end_time = time.time()
 
 total_training_time = end_time - starting_time 
@@ -600,6 +541,3 @@ np.save('{}/val_acc_log'.format(new_folder), report_val_acc)
 np.save('{}/val_r2_log'.format(new_folder), report_val_r2)
 print("++++++ HEPISTEMIC UNCERTAINTY WEIGHTED LOSS TRAINING: OK WE'RE DONE OVER HERE ++++++ FOLDER: {} ++++++ GOOD JOB. ".format(new_folder))
 exit(0)
-
-
-# In[ ]:

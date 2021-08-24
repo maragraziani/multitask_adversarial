@@ -12,7 +12,6 @@ import shutil
 sys.path.append('lib/TASK_2_UC1/')
 from models import *
 from util import otsu_thresholding
-#from extract_xml import *
 from functions import *
 sys.path.append('lib/')
 from mlta import *
@@ -26,17 +25,16 @@ config.gpu_options.allow_growth = True
 keras.backend.set_session(tf.Session(config=config))
 #
 verbose=True 
-# DATA PATHS
+# ORIGINAL DATA PATHS
 #cam16 = hd.File('/home/mara/adversarialMICCAI/data/ultrafast/cam16_500/patches.hdf5',  'r', libver='latest', swmr=True)
 #all500 = hd.File('/home/mara/adversarialMICCAI/data/ultrafast/all500/patches.hdf5',  'r', libver='latest', swmr=True)
 #extra17 = hd.File('/home/mara/adversarialMICCAI/data/ultrafast/extra17/patches.hdf5',  'r', libver='latest', swmr=True)
 #tumor_extra17=hd.File('/home/mara/adversarialMICCAI/data/ultrafast/1129-1155/patches.hdf5', 'r', libver='latest', swmr=True)
 #test2 = hd.File('/mnt/nas2/results/IntermediateResults/Camelyon/ultrafast/test_data2/patches.hdf5', 'r', libver='latest', swmr=True)
 #pannuke= hd.File('/mnt/nas2/results/IntermediateResults/Camelyon/pannuke/patches_fix.hdf5', 'r', libver='latest', swmr=True)
-#
-global data
 #data={'cam16':cam16,'all500':all500,'extra17':extra17, 'tumor_extra17':tumor_extra17, 'test_data2': test2, 'pannuke':pannuke}
-data = hd.File('data/demo_file.h5py', 'r')#, libver='latest', swmr=True)
+global data
+data = hd.File('data/demo_file.h5py', 'r') # Replace here with your data 
 CONFIG_FILE = 'doc/config.cfg'
 COLOR = True
 global new_folder
@@ -67,7 +65,6 @@ test2_csv.close()
 train_csv.close()
 val_csv.close()
 test_csv.close()
-#data_csv=open('./doc/pannuke_data_shuffle.csv')
 data_csv=open('./doc/demo_data_shuffle.csv')
 data_list=data_csv.readlines()
 data_csv.close()
@@ -85,7 +82,6 @@ def normalize_patch(patch, normalizer):
 global normalizer
 db_name, entry_path, patch_no = get_keys(data_list[0])
 normalization_reference_patch = data[db_name][entry_path][str(patch_no)][:]
-#import pdb; pdb.set_trace()
 normalizer = get_normalizer(normalization_reference_patch, save_folder=new_folder)
 
 """
@@ -96,7 +92,6 @@ They use the list to create a batch of 32 samples.
 # BATCH GENERATORS
 def get_batch_data(patch_list, batch_size=32):
     num_samples=len(patch_list)
-    #global batch_size
     while True:
         offset = 0
         for offset in range(0,num_samples, batch_size):
@@ -114,6 +109,7 @@ def get_batch_data(patch_list, batch_size=32):
                 batch_y.append(label)
             batch_x = np.asarray(batch_x, dtype=np.float32)
             yield np.asarray(batch_x, dtype=np.float32), np.asarray(batch_y, dtype=np.float32)       
+
 def get_test_batch(patch_list, batch_size=32):
     num_samples=len(patch_list)
     while True:
@@ -139,7 +135,6 @@ Building baseline model
 """
 base_model = keras.applications.inception_v3.InceptionV3(include_top=False, weights='imagenet', input_shape=(224,224,3))
 layers_list=['conv2d_92', 'conv2d_93', 'conv2d_88', 'conv2d_89', 'conv2d_86']
-#layers_list=[]
 for i in range(len(base_model.layers[:])):
     layer=base_model.layers[i]
     if layer.name in layers_list:
@@ -156,24 +151,21 @@ feature_output = keras.layers.Dropout(0.8, noise_shape=None, seed=None)(feature_
 feature_output = Dense(256, activation='relu', name='finetuned_features3',kernel_regularizer=keras.regularizers.l2(0.01))(feature_output)
 feature_output = keras.layers.Dropout(0.8, noise_shape=None, seed=None)(feature_output)
 finetuning = Dense(1,name='predictions')(feature_output)
-model = Model(input=base_model.input, output=finetuning)#, regression_output])
+model = Model(input=base_model.input, output=finetuning)
 #
 def compile_model(model, opt):
     model.compile(optimizer=opt,
                   loss=classifier_loss,
                   metrics=[my_acc_f, my_accuracy,tp_count, fp_count, fn_count, tn_count]
                  )
-#
 # Callbacks
 logdir='{}/tb_log'.format(new_folder)
 checkpoint_dir = '{}'.format(new_folder) 
 callbacks = [LR_scheduling(new_folder=new_folder), 
              keras.callbacks.EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=10),
             keras.callbacks.ModelCheckpoint('{}/best_model.h5'.format(checkpoint_dir), monitor='val_loss', mode='min', save_best_only=True, verbose=1)]
-# END Callbacks
-#
+
 """ Logging files"""
-# LOG FILE
 f=open("{}/{}_log.txt".format(new_folder, EXPERIMENT_TYPE), 'w')
 print("{}/{}_log.txt".format(new_folder, EXPERIMENT_TYPE))
 f.write('Trainable layers: ')
@@ -185,12 +177,11 @@ global lr_monitor
 lr_monitor=open('{}/lr_monitor.log'.format(new_folder), 'w') #if hvd.rank()==0 else None
 print("Opened monitoring file for learning rate: {}/lr_monitor.log".format(new_folder))
 """ """
-#
-# Model Compile
+
 initial_lr = 1e-4
 opt = keras.optimizers.SGD(lr=initial_lr, momentum=0.9, nesterov=False)
 compile_model(model,opt)
-#
+
 """ Init Generators """
 train_generator=get_batch_data(data_list, batch_size=BATCH_SIZE)
 val_generator=get_test_batch(val_list, batch_size=BATCH_SIZE)
@@ -211,7 +202,7 @@ try:
 except:
     print("auc score not available in demo mode")
     auc=0.
-#
+    
 print 'Before training auc: ', auc
 rpreds=tf.round(preds).eval(session=tf.Session())
 before_training_score=sklearn.metrics.accuracy_score(ys, rpreds)
@@ -219,6 +210,7 @@ f=open("{}/{}_log.txt".format(new_folder, EXPERIMENT_TYPE), 'a')
 f.write('Before training auc: {}\n'.format(auc))
 f.write('Before training loss, acc: {}'.format(before_training_score))
 f.close()
+
 # START TRAINING
 starting_time = time.time()
 
@@ -250,8 +242,7 @@ auc = sklearn.metrics.roc_auc_score(ys,preds)
 accuracy = sklearn.metrics.accuracy_score(ys, tf.round(preds).eval(session=tf.Session()))
 #
 if verbose:
-    print ('Before training test score: ', before_training_score)#[0], before_training_score[1])
-    #print('Test loss:', score[0])
+    print ('Before training test score: ', before_training_score)
     print('Test accuracy:', accuracy)
     f=open("{}/{}_log.txt".format(new_folder, EXPERIMENT_TYPE), 'a')
     f.write('Post training loss, acc: {}\n'.format(accuracy))
