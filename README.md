@@ -102,39 +102,40 @@ To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
 
-This code was developed in Python 3.6 and using Tensorflow 2. You will also need some standard packages to replicate the experiments. Follow the instructions in **Installation** to set the environment 
+This code was developed in Tensorflow 1.8 and Keras 2.2.4. Standard packages (e.g. numpy, scikit-learn, pandas, matplotlib, etc.) are needed to replicate the experiments. Follow the instructions in **Installation** to set the environment 
 
 ### Installation
-Installation should take ~20 minutes on a normal laptop.
+Installation should take ~20 minutes on a normal laptop. Follow the steps below.
+
 1. Clone the repo
    ```sh
    git clone https://github.com/maragraziani/multitask_adversarial
    ```
-2. Install python packages with pip 
+2. Install python packages with pip and the correct versions of Tensorflow and Keras.
     ```sh
     pip install -r requirements.txt
     pip install https://storage.googleapis.com/tensorflow/mac/cpu/tensorflow-1.8.0-py3-none-any.whl
     pip install keras==2.2.4 setproctitle
     pip install -U --force-reinstall --no-dependencies git+https://github.com/datumbox/keras@bugfix/trainable_bn 
     ```
-3. Install further dependencies 
+3. Install further dependencies for the histopathology application
     ```sh
     cd lib/TASK_2_UC1
     git clone https://github.com/medgift/PROCESS_L2.git
     mv PROCESS_L2/* .
     
      ```
-
+     
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-To train the baseline (with no extra branches) model:
+##### To train the baseline (with no extra branches) model:
 
-rerun the command below by replacing the elements in the brakets with desired values (e.g. EXPERIMENT_NAME=BASELINE, SEED=1001)
+Rerun the command below by replacing the elements in the brakets with desired values (e.g. EXPERIMENT_NAME=BASELINE, SEED=1001). Run [-h] option for help.
  ```sh
    bash routines/train_baseline.sh [EXPERIMENT_NAME] [SEED]
    ```
-Expected outcome in: 
+Expected outcome (in results/): 
  ```sh
 ├results/[EXPERIMENT_NAME]
     ├── [EXPERIMENT_NAME]_log.txt
@@ -145,15 +146,15 @@ Expected outcome in:
     ├── seed.txt
     ├── training_log.npy
    ```
-To train the multi-task model (**without the adversarial branch**):
+##### To train the multi-task model (**without the adversarial branch**):
 
 You can rerun the command below by replacing the elements in the brakets with the desired values (e.g. EXPERIMENT_NAME=MTA, SEED=1001, CONCEPT_LIST="ncount, narea"). Run [-h] option for help.
 
  ```sh
    bash routines/train_uncertainty_weighted_multitask.sh [EXPERIMENT_NAME] [SEED] [CONCEPT_LIST]
    ``` 
- 
-Expected outcome in: 
+   
+The expected outcome (to be found in results/) looks as follows: 
  
  ```sh
 ├results/[EXPERIMENT_NAME]
@@ -173,7 +174,7 @@ Expected outcome in:
     ├── val_acc_log.npy
    ```
    
-To train the multi-task adversarial model (**including the adversarial branch (adversarial to WSI acquisition center)**):
+##### To train the multi-task adversarial model (**including the adversarial branch (adversarial to WSI acquisition center)**):
 
 Rerun the command below by replacing the elements in the brakets with the desired values (e.g. EXPERIMENT_NAME=MTA, SEED=1001, CONCEPT_LIST="domain, ncount, narea"). Run [-h] option for help.
 
@@ -181,7 +182,7 @@ Rerun the command below by replacing the elements in the brakets with the desire
    bash routines/train_uncertainty_weighted_mta.sh [EXPERIMENT_NAME] [SEED] [CONCEPT_LIST]
    ``` 
  
-Expected outcome in: 
+Expected outcome: 
  
  ```sh
 ├results/[EXPERIMENT_NAME]
@@ -201,29 +202,31 @@ Expected outcome in:
     ├── val_acc_log.npy
    ```
    
-The single script can be called as follows:
+The main python script is train_multitask_adversarial.py and it is called by the bash routines as in the following:
     ```sh 
    python train_multitask_adversarial.py GPU_INDEX EXPERIMENT_NAME UNDESIRED_TARGET DESIRED_TARGETS
+  ```
    ```
- For example will run the CNN with domain-adversarial training and the additional learning of nuclei count:
- 
-  ```sh
-   python train_multitask_adversarial.py 0 DOMAIN-COUNT  domain count
-   ```
+It is called in this way, for example, to run the CNN with domain-adversarial training and the additional (desired) learning target of nuclei count:
 
+ ```sh 
+   python train_multitask_adversarial.py 0 DOMAIN-COUNT  domain count
+  ```
+  
 For more examples, please refer to the [Notebooks](https://github.com/maragraziani/multitask_adversarial/tree/main/notebooks) folder
 
 # Reproducibility
 
-To replicate baseline results (in Table x)
+To replicate baseline results (line ID 1 in Table 2)
  ```sh
    bash replicate_baseline.sh
    ```
-To replicate multi-task adversarial results (in Table x)
+To replicate multi-task adversarial results (line IDs 2 to 8 in Table 2)
+
  ```sh
    bash replicate_mta.sh
    ```  
-
+To replicate Figure 4, see the notebook [notebooks/visualize/UMAP_p3.ipynb](https://github.com/maragraziani/multitask_adversarial/blob/master/notebooks/visualize/UMAP_p3.ipynb)
 
 <!-- LICENSE -->
 ## License
