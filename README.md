@@ -102,7 +102,7 @@ To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
 
-This code was developed in Tensorflow 1.8 and Keras 2.2.4. Standard packages (e.g. numpy, scikit-learn, pandas, matplotlib, etc.) are needed to replicate the experiments. Follow the instructions in **Installation** to set the environment 
+This code was developed in Tensorflow 1.8 and Keras 2.2.4. Standard packages (e.g. numpy, scikit-learn, pandas, matplotlib, etc.) are needed to replicate the experiments. The complete list of dependencies is in requirements.txt. Follow the instructions in **Installation** to set the environment. 
 
 ### Installation
 Installation should take ~20 minutes on a normal laptop. Follow the steps below.
