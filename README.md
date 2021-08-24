@@ -239,10 +239,21 @@ Mara Graziani - [@mormontre](https://twitter.com/mormontre) - mara.graziani@hevs
 <!-- ACKNOWLEDGEMENTS -->
 ## Cite our work
 
-If you make use of the code, please cite our paper in your work
+If you use this software, please cite it as below
 
+cff-version: 1.1.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Joe
+    given-names: Johnson
+    orcid: https://orcid.org/0000-0000-0000-0000
+title: maragraziani/multitask_adversarial: Official Release
+version: 0.2
+date-released: 2017-12-18
+
+Cite also the paper for this work:
 ```
-TBD
+Mara Graziani, Sebastian Otalora, Stephane Marchand-Maillet, Henning Muller, Vincent Andrearczyk. Learning Interpretable Pathology Features by Multi-task and Adversarial Training Improves CNN Generalization. Under Review. 
 ```
 
 
