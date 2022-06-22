@@ -55,7 +55,7 @@ nbformat==4.4.0
 networkx==2.2
 notebook==5.7.10
 nucleus==0.0.1
-numpy==1.16.6
+numpy==1.22.0
 oauthlib==3.1.0
 opencv-python==4.2.0.32
 openslide-python==1.1.2
