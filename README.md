@@ -27,7 +27,7 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
-[![DOI][doi-shield][doi-url]
+[![DOI](https://zenodo.org/badge/284033732.svg)](https://zenodo.org/badge/latestdoi/284033732)
 
 
 <!-- PROJECT LOGO -->
@@ -271,8 +271,7 @@ Mara Graziani, Sebastian Otalora, Stephane Marchand-Maillet, Henning Muller, Vin
 [license-url]: https://github.com/maragraziani/multitask_adversarial/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/mara-graziani-878980105/
-[doi-shield]:https://img.shields.io/doi?style=for-the-badge
-[doi-url]: https://zenodo.org/badge/latestdoi/284033732
+
 
 
 
